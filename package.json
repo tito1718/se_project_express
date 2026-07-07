@@ -1,0 +1,23 @@
+{
+  "name": "se_project_express",
+  "version": "1.0.0",
+  "description": "TripleTen Sprint 12 Express project",
+  "homepage": "https://github.com/tito1718/se_project_express#readme",
+  "bugs": {
+    "url": "https://github.com/tito1718/se_project_express/issues"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/tito1718/se_project_express.git"
+  },
+  "license": "ISC",
+  "author": "Cesar Chirino",
+  "type": "commonjs",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "dependencies": {
+    "express": "^4.22.2"
+  }
+}
