@@ -1,6 +1,7 @@
 const express = require("express");
 const mongoose = require("mongoose");
 const routes = require("./routes");
+const { createUser, login } = require("./controllers/users");
 
 const app = express();
 
@@ -10,13 +11,8 @@ mongoose.connect("mongodb://127.0.0.1:27017/wtwr_db");
 
 app.use(express.json());
 
-app.use((req, res, next) => {
-  req.user = {
-    _id: "6a4da36122fec2cc20ac863e",
-  };
-
-  next();
-});
+app.post("/signin", login);
+app.post("/signup", createUser);
 
 app.use("/", routes);
 
