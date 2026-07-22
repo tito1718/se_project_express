@@ -11,17 +11,6 @@ const {
   CONFLICT,
 } = require("../utils/errors");
 
-const getUsers = (req, res) => {
-  User.find({})
-    .then((users) => res.send(users))
-    .catch((err) => {
-      console.error(err);
-      return res
-        .status(INTERNAL_SERVER_ERROR)
-        .send({ message: "An error has occurred on the server." });
-    });
-};
-
 const getCurrentUser = (req, res) => {
   User.findById(req.user._id)
     .orFail()
@@ -84,7 +73,13 @@ const updateProfile = (req, res) => {
 const createUser = (req, res) => {
   const { name, avatar, email, password } = req.body;
 
-  bcrypt
+  if (!name || !avatar || !email || !password) {
+    return res.status(BAD_REQUEST).send({
+      message: "Invalid user data",
+    });
+  }
+
+  return bcrypt
     .hash(password, 10)
     .then((hash) =>
       User.create({
@@ -99,7 +94,7 @@ const createUser = (req, res) => {
 
       delete userData.password;
 
-      res.status(201).send(userData);
+      return res.status(201).send(userData);
     })
     .catch((err) => {
       console.error(err);
@@ -133,15 +128,22 @@ const login = (req, res) => {
 
       return res.send({ token });
     })
-    .catch(() =>
-      res.status(UNAUTHORIZED).send({
-        message: "Incorrect email or password",
-      })
-    );
+    .catch((err) => {
+      console.error(err);
+
+      if (err.message === "Incorrect email or password") {
+        return res.status(UNAUTHORIZED).send({
+          message: "Incorrect email or password",
+        });
+      }
+
+      return res.status(INTERNAL_SERVER_ERROR).send({
+        message: "An error has occurred on the server.",
+      });
+    });
 };
 
 module.exports = {
-  getUsers,
   getCurrentUser,
   updateProfile,
   createUser,
