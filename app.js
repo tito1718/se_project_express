@@ -1,6 +1,7 @@
 const express = require("express");
 const cors = require("cors");
 const mongoose = require("mongoose");
+const { errors } = require("celebrate");
 
 const routes = require("./routes");
 const errorHandler = require("./middlewares/error-handler");
@@ -28,6 +29,8 @@ app.use("/", routes);
 app.use((_req, _res, next) => {
   next(new NotFoundError("Requested resource not found"));
 });
+
+app.use(errors());
 
 app.use(errorHandler);
 
