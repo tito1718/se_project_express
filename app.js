@@ -3,6 +3,8 @@ const cors = require("cors");
 const mongoose = require("mongoose");
 
 const routes = require("./routes");
+const errorHandler = require("./middlewares/error-handler");
+const NotFoundError = require("./errors/not-found-error");
 
 const app = express();
 
@@ -10,8 +12,8 @@ const { PORT = 3001 } = process.env;
 
 mongoose.connect("mongodb://127.0.0.1:27017/wtwr_db");
 
-app.use(express.json());
 app.use(cors());
+app.use(express.json());
 
 app.use((req, res, next) => {
   req.user = {
@@ -22,6 +24,12 @@ app.use((req, res, next) => {
 });
 
 app.use("/", routes);
+
+app.use((_req, _res, next) => {
+  next(new NotFoundError("Requested resource not found"));
+});
+
+app.use(errorHandler);
 
 app.listen(PORT, () => {
   console.log(`Server is running on port ${PORT}`);

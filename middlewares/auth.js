@@ -1,14 +1,12 @@
 const jwt = require("jsonwebtoken");
 const { JWT_SECRET } = require("../utils/config");
-const { UNAUTHORIZED } = require("../utils/errors");
+const UnauthorizedError = require("../errors/unauthorized-error");
 
-const auth = (req, res, next) => {
+const auth = (req, _res, next) => {
   const token = req.headers.authorization?.replace("Bearer ", "");
 
   if (!token) {
-    return res.status(UNAUTHORIZED).send({
-      message: "Access denied. No token provided.",
-    });
+    return next(new UnauthorizedError("Access denied. No token provided."));
   }
 
   try {
@@ -17,10 +15,8 @@ const auth = (req, res, next) => {
     req.user = payload;
 
     return next();
-  } catch (err) {
-    return res.status(UNAUTHORIZED).send({
-      message: "Invalid token.",
-    });
+  } catch {
+    return next(new UnauthorizedError("Invalid token."));
   }
 };
 
