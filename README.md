@@ -1,157 +1,154 @@
-# WTWR (What to Wear?) – Back End
+# WTWR Backend
 
-## Overview
+REST API for the WTWR weather-based wardrobe application. It provides authentication, profile management, clothing-item persistence, authorization, validation, security controls, and protected OpenWeather communication.
 
-The WTWR (What to Wear?) backend is a RESTful API built with Node.js, Express.js, MongoDB, and Mongoose. It serves as the backend for the WTWR application and handles user accounts, clothing-item data, database operations, authentication, authorization, and API routing.
+## Project links
 
-This project was developed as part of the TripleTen Software Engineering program to practice building a scalable backend application using the MVC architecture, MongoDB, Express, and secure authentication with JSON Web Tokens (JWTs).
-
-## Deployed Application
-
-- Frontend: [https://tito-wtwr.crabdance.com](https://tito-wtwr.crabdance.com)
-- Backend API: [https://api.tito-wtwr.crabdance.com](https://api.tito-wtwr.crabdance.com)
-- Frontend repository: [https://github.com/tito1718/se_project_react](https://github.com/tito1718/se_project_react)
-- Backend repository: [https://github.com/tito1718/se_project_express](https://github.com/tito1718/se_project_express)
-- Project pitch video: [Watch the WTWR project pitch on Loom](https://www.loom.com/share/bdb6029ae0f14c6796b9c8fda1665f3a)
+- **Live application:** [Open WTWR](https://wtwr.ldtp.com)
+- **API:** [WTWR API](https://api.tito-wtwr.crabdance.com)
+- **Frontend repository:** [wtwr-frontend](https://github.com/tito1718/wtwr-frontend)
+- **Backend repository:** [wtwr-backend](https://github.com/tito1718/wtwr-backend)
 
 ## Features
 
-- User registration with securely hashed passwords
-- Secure user login using JWT authentication
-- Protected API routes using authorization middleware
-- Retrieval and updating of the authenticated user’s profile
-- Creation, retrieval, and deletion of clothing items
-- Ability to like and unlike clothing items
-- Ownership verification before deleting clothing items
-- MongoDB integration using Mongoose
-- Request validation using Celebrate and Joi
-- Model validation using Mongoose schemas
-- URL validation using the validator package
-- Password hashing using bcryptjs
+- Secure user registration and sign-in
+- Password hashing with bcrypt
+- JWT authentication
+- Protected user-profile routes
+- Profile name and avatar updates
+- Persistent clothing-item storage
+- Item ownership protection
+- Like and unlike operations
+- Request validation with Celebrate and Joi
 - Centralized error handling
-- RESTful API architecture
-- Organized project structure using controllers, routes, models, middleware, and utilities
+- Request and error logging
+- Restricted production CORS
+- Helmet security headers
+- API rate limiting
+- Request-body size limits
+- Server-side OpenWeather proxy
+- Environment-based secrets and database configuration
+- Automated tests
 
-## Technologies Used
+## Technologies
 
 - Node.js
-- Express.js
+- Express
 - MongoDB
 - Mongoose
-- JavaScript (ES6)
-- JSON Web Tokens (JWT)
-- bcryptjs
-- Celebrate
-- Joi
-- Validator
-- ESLint with the Airbnb Style Guide
-- Prettier
-- Nodemon
-- Postman
-- Git and GitHub
-- GitHub Actions
+- JSON Web Tokens
+- bcrypt
+- Celebrate and Joi
+- Helmet
+- express-rate-limit
+- Winston
+- Node test runner
+- ESLint
 
-## Project Structure
+## API endpoints
 
-```text
-controllers/
-errors/
-middlewares/
-models/
-routes/
-utils/
-.github/
-.editorconfig
-.eslintrc
-.gitignore
-app.js
-package.json
-README.md
-```
+### Public endpoints
 
-## Database
-
-The application uses MongoDB with Mongoose. During local development, it connects to the following database:
-
-```text
-mongodb://127.0.0.1:27017/wtwr_db
-```
-
-In production, the database connection and other sensitive configuration values can be supplied through environment variables.
-
-## API Endpoints
-
-### Authentication
-
-| Method | Endpoint  | Description                            |
-| ------ | --------- | -------------------------------------- |
-| `POST` | `/signup` | Registers a new user                   |
+| Method | Endpoint | Description |
+| --- | --- | --- |
+| `POST` | `/signup` | Registers a new user |
 | `POST` | `/signin` | Authenticates a user and returns a JWT |
+| `GET` | `/items` | Retrieves clothing items |
+| `GET` | `/weather` | Returns weather for validated coordinates |
 
-### Users
+### Authenticated endpoints
 
-| Method  | Endpoint    | Description                                      |
-| ------- | ----------- | ------------------------------------------------ |
-| `GET`   | `/users`    | Retrieves all users                              |
-| `GET`   | `/users/me` | Retrieves the authenticated user’s profile       |
-| `PATCH` | `/users/me` | Updates the authenticated user’s name and avatar |
+| Method | Endpoint | Description |
+| --- | --- | --- |
+| `GET` | `/users/me` | Retrieves the current user |
+| `PATCH` | `/users/me` | Updates the current user |
+| `POST` | `/items` | Creates a clothing item |
+| `DELETE` | `/items/:itemId` | Deletes an owned clothing item |
+| `PUT` | `/items/:itemId/likes` | Likes a clothing item |
+| `DELETE` | `/items/:itemId/likes` | Removes a clothing-item like |
 
-### Clothing Items
+## Local development
 
-| Method   | Endpoint               | Description                                        |
-| -------- | ---------------------- | -------------------------------------------------- |
-| `GET`    | `/items`               | Retrieves all clothing items                       |
-| `POST`   | `/items`               | Creates a new clothing item                        |
-| `DELETE` | `/items/:itemId`       | Deletes an item owned by the authenticated user    |
-| `PUT`    | `/items/:itemId/likes` | Adds the authenticated user’s like to an item      |
-| `DELETE` | `/items/:itemId/likes` | Removes the authenticated user’s like from an item |
+### 1. Clone the repository
 
-## Authentication and Authorization
+~~~bash
+git clone https://github.com/tito1718/wtwr-backend.git
+cd wtwr-backend
+~~~
 
-After a successful login, the backend creates a JSON Web Token. The frontend includes this token with requests to protected endpoints.
+### 2. Install dependencies
 
-Authorization middleware verifies the token before allowing access to protected resources. Ownership checks also ensure that users can delete only the clothing items they created.
+~~~bash
+npm ci
+~~~
 
-## Authentication and Authorization Demo
+### 3. Configure the environment
 
-The following video demonstrates the project’s authentication and authorization features, including:
+Copy `.env.example` to `.env` and supply private values:
 
-- User registration
-- User login
-- JWT authentication
-- Protected routes
-- Profile retrieval and updates
-- Clothing-item ownership checks
+~~~env
+PORT=3001
+DATABASE_URL=mongodb://127.0.0.1:27017/wtwr_db
+JWT_SECRET=replace_with_a_long_random_secret
+WEATHER_API_KEY=your_openweather_api_key
+~~~
 
-[Watch the authentication and authorization demo on Loom](https://www.loom.com/share/cd24b3766f48459baa7fe8b5437bd0ca)
+Never commit the `.env` file.
+
+### 4. Start the API
+
+~~~bash
+npm run dev
+~~~
+
+## Available scripts
+
+~~~bash
+npm start
+npm run dev
+npm run lint
+npm test
+~~~
 
 ## Testing
 
-The project was tested using:
+The backend uses Node’s built-in test runner. Current automated coverage verifies:
 
-- Postman API test suite
-- GitHub Actions
-- ESLint
+- Successful server-side weather retrieval
+- Safe forwarding of weather-provider failures into centralized error handling
 
-Testing covered authentication, protected routes, data validation, profile management, clothing-item operations, and authorization checks.
+~~~bash
+npm test
+~~~
 
-## Future Improvements
+## Security
 
-- Direct image-upload support
-- Password-reset functionality
-- Email verification
-- Refresh-token authentication
-- Role-based user permissions
-- Clothing categories for men’s, women’s, and unisex garments
-- Profile organization based on weather categories
-- Favorite outfits and personalized recommendations
-- Clothing search, filtering, and sorting
-- Weather forecasts for planning outfits in advance
+- Passwords are stored only as bcrypt hashes
+- JWT secrets and third-party API keys remain server-side
+- Production startup rejects the development JWT secret
+- CORS allows only approved frontend origins
+- Helmet adds defensive HTTP headers
+- Rate limiting reduces automated abuse
+- JSON request bodies are size-limited
+- Celebrate validates request bodies, route parameters, and coordinates
+- Ownership checks prevent unauthorized item deletion
+- Internal server failures return safe public messages
+
+## Production deployment
+
+The API is deployed on a Google Cloud VM.
+
+Production request flow:
+
+1. The WTWR frontend sends an HTTPS request.
+2. Nginx receives the request on the Google Cloud VM.
+3. Nginx forwards it to the WTWR API on port `3001`.
+4. The API communicates with MongoDB or OpenWeather.
+5. PM2 keeps the backend running across terminal sessions and restarts.
 
 ## Author
 
 **Cesar “Tito” Chirino**
 
-Software Engineering Student at TripleTen
-
-[GitHub Profile](https://github.com/tito1718)
+- [GitHub](https://github.com/tito1718)
+- [LinkedIn](https://www.linkedin.com/in/cesar-tito-chirino/)
