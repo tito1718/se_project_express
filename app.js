@@ -27,7 +27,7 @@ const allowedOrigins = [
   "http://localhost:3000",
   "http://localhost:5173",
   "https://tito-wtwr.crabdance.com",
-  "https://wtwr.ldtp.com",
+  "https://whattowear.ldtp.com",
 ];
 
 app.set("trust proxy", 1);

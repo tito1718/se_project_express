@@ -4,7 +4,7 @@ REST API for the WTWR weather-based wardrobe application. It provides authentica
 
 ## Project links
 
-- **Live application:** [Open WTWR](https://wtwr.ldtp.com)
+- **Live application:** [Open WTWR](https://whattowear.ldtp.com)
 - **API:** [WTWR API](https://api.tito-wtwr.crabdance.com)
 - **Frontend repository:** [wtwr-frontend](https://github.com/tito1718/wtwr-frontend)
 - **Backend repository:** [wtwr-backend](https://github.com/tito1718/wtwr-backend)
