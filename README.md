@@ -16,6 +16,7 @@ REST API for the WTWR weather-based wardrobe application. It provides authentica
 - JWT authentication
 - Protected user-profile routes
 - Profile name and avatar updates
+- Secure account deletion with owned-item and like cleanup
 - Persistent clothing-item storage
 - Item ownership protection
 - Like and unlike operations
@@ -62,6 +63,7 @@ REST API for the WTWR weather-based wardrobe application. It provides authentica
 | --- | --- | --- |
 | `GET` | `/users/me` | Retrieves the current user |
 | `PATCH` | `/users/me` | Updates the current user |
+| `DELETE` | `/users/me` | Permanently deletes the current user and cleans up associated data |
 | `POST` | `/items` | Creates a clothing item |
 | `DELETE` | `/items/:itemId` | Deletes an owned clothing item |
 | `PUT` | `/items/:itemId/likes` | Likes a clothing item |

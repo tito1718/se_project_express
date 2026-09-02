@@ -2,6 +2,7 @@ const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
 
 const User = require("../models/user");
+const ClothingItem = require("../models/clothingItem");
 const { JWT_SECRET } = require("../utils/config");
 
 const BadRequestError = require("../errors/bad-request-error");
@@ -113,9 +114,35 @@ const login = (req, res, next) => {
     });
 };
 
+const deleteCurrentUser = (req, res, next) => {
+  const userId = req.user._id;
+
+  Promise.all([
+    ClothingItem.deleteMany({ owner: userId }),
+    ClothingItem.updateMany(
+      { likes: userId },
+      { $pull: { likes: userId } },
+    ),
+  ])
+    .then(() => User.findByIdAndDelete(userId).orFail())
+    .then(() => res.status(204).send())
+    .catch((err) => {
+      if (err.name === "CastError") {
+        return next(new BadRequestError("Invalid user ID"));
+      }
+
+      if (err.name === "DocumentNotFoundError") {
+        return next(new NotFoundError("User not found"));
+      }
+
+      return next(err);
+    });
+};
+
 module.exports = {
   getCurrentUser,
   updateProfile,
   createUser,
   login,
+  deleteCurrentUser,
 };
